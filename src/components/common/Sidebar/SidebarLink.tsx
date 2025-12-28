@@ -19,7 +19,11 @@ export default function SidebarLink({title, Icon, link} : {title: string, Icon: 
                         <motion.div layoutId="nav-bg" className="w-[95%] h-full bg-neutral-300 absolute -z-10 rounded-r-2xl shadow-3xl"/>
                     )}
 
-                    <Icon/>
+                    <Icon className={`w-6 h-6 mx-3 
+                        ${isActive
+                            ? "text-neutral-900"
+                            : "text-neutral-500"}`
+                     }/>
                     {title}
                 </>
             )}

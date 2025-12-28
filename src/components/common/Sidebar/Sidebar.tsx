@@ -1,39 +1,11 @@
 import type {User} from "../../../types/user.ts";
 import pfp from "../../../assets/pfp.jpg";
-import mc from "../../../assets/minecraft.png";
 import SidebarLink from "./SidebarLink.tsx";
+import HomeIcon from "../icons/sidebar/Home.tsx";
+import ConsoleIcon from "../icons/sidebar/Console.tsx";
+import FileIcon from "../icons/sidebar/Folder.tsx";
+import GearIcon from "../icons/sidebar/Setting.tsx";
 
-
-const activeGames: {title: string, image: string, link: string}[] = [
-    {
-        title: "Minecraft",
-        image: mc,
-        link: "/servers/minecraft"
-    },
-    {
-        title: "Terraria",
-        image: mc,
-        link: "/servers/terraria"
-    },
-
-    {
-        title: "Minecraft 2",
-        image: mc,
-        link: "/servers/minecraft2"
-    },
-
-    {
-        title: "Hytale",
-        image: mc,
-        link: "/servers/hytale"
-    },
-
-    {
-        title: "Ark",
-        image: mc,
-        link: "/servers/ark"
-    },
-]
 
 export default function Sidebar({currentUser}: {currentUser: User}) {
 
@@ -53,10 +25,13 @@ export default function Sidebar({currentUser}: {currentUser: User}) {
 
             {/* Sidebar links */}
             <div className="w-full h-full">
-                <h1 className="font-bold px-6 mt-3 mb-4 text-2xl">Games</h1>
+                <h1 className="font-bold px-6 mt-3 mb-4 text-2xl">Settings</h1>
                 <div className="flex flex-col items-start justify-start w-full h-full overflow-visible">
 
-                    {/*<SidebarLink title={"Home"} Icon={} link={"/home"}/>*/}
+                    <SidebarLink title={"Home"} Icon={HomeIcon} link={"/"}/>
+                    <SidebarLink title={"Console"} Icon={ConsoleIcon} link={"/console"}/>
+                    <SidebarLink title={"Files"} Icon={FileIcon} link={"/files"}/>
+                    <SidebarLink title={"Settings"} Icon={GearIcon} link={"/settings"}/>
 
                 </div>
             </div>
