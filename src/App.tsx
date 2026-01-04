@@ -1,6 +1,6 @@
 import {Routes, Route} from "react-router-dom";
 import UserDashboard from "./pages/UserDashboard.tsx";
-import GameNav from "./components/common/GameNav/GameNav.tsx";
+import Sidebar from "./components/common/Sidebar/Sidebar.tsx";
 
 function App() {
 
@@ -12,7 +12,7 @@ function App() {
 
   return (
     <>
-      <GameNav currentUser={mockUser} />
+      <Sidebar currentUser={mockUser} />
 
       <Routes>
         <Route path="/" element={ <UserDashboard currentUser={mockUser}/> } />
