@@ -5,6 +5,7 @@ import HomeIcon from "../icons/sidebar/Home.tsx";
 import ConsoleIcon from "../icons/sidebar/Console.tsx";
 import FileIcon from "../icons/sidebar/Folder.tsx";
 import GearIcon from "../icons/sidebar/Setting.tsx";
+import ToolIcon from "../icons/sidebar/Tools.tsx";
 
 
 export default function Sidebar({currentUser}: {currentUser: User}) {
@@ -30,7 +31,8 @@ export default function Sidebar({currentUser}: {currentUser: User}) {
 
                     <SidebarLink title={"Home"} Icon={HomeIcon} link={"/"}/>
                     <SidebarLink title={"Console"} Icon={ConsoleIcon} link={"/console"}/>
-                    <SidebarLink title={"Files"} Icon={FileIcon} link={"/files"}/>
+                    <SidebarLink title={"Backups"} Icon={FileIcon} link={"/backups"}/>
+                    <SidebarLink title={"Mods"} Icon={ToolIcon} link={"/mods"}/>
                     <SidebarLink title={"Settings"} Icon={GearIcon} link={"/settings"}/>
 
                 </div>
