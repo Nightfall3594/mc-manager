@@ -1,4 +1,7 @@
 import ModCard from "../components/mods/ModCard.tsx";
+import {PopupModal} from "../components/common/Popup/PopupModal.tsx";
+import {useState} from "react";
+import ModUploadArea from "../components/mods/UploadMod.tsx";
 
 
 export type Mod = {
@@ -18,6 +21,8 @@ export default function ModsPage() {
         { id: '3', name: 'Mod Three', version: '1.2.1', fileSize: 75 },
     ]
 
+    const [isUploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
+
     return (
         <section className="ml-60 p-30 flex flex-col flex-1 h-screen gap-8">
 
@@ -27,7 +32,12 @@ export default function ModsPage() {
                 </h1>
 
                 <div className="flex flex-row ">
-                    <button className="bg-cyan-700 text-white px-3 py-1.5 rounded mr-2 ">Add Mod</button>
+                    <button
+                        onClick={() => setUploadModalVisible(true)}
+                        className="bg-cyan-700 text-white px-3 py-1.5 rounded mr-2 "
+                    >
+                        Add Mod
+                    </button>
                     <button className="bg-teal-700 text-white px-3 py-1.5 rounded ">Refresh Mods</button>
                 </div>
             </div>
@@ -40,6 +50,14 @@ export default function ModsPage() {
                     })
                 }
             </div>
+
+            <PopupModal
+                isOpen={isUploadModalVisible}
+                onClose={() => setUploadModalVisible(false)}
+                title={"Upload"}
+            >
+                <ModUploadArea/>
+            </PopupModal>
 
         </section>
     );
