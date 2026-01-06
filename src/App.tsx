@@ -3,6 +3,7 @@ import UserDashboard from "./pages/UserDashboard.tsx";
 import Sidebar from "./components/common/Sidebar/Sidebar.tsx";
 import Console from "./pages/Console.tsx";
 import BackupsPage from "./pages/Backups.tsx";
+import ModsPage from "./pages/Mods.tsx";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" element={ <UserDashboard /> } />
         <Route path="/console" element={ <Console /> } />
         <Route path="/backups" element={ <BackupsPage /> } />
+          <Route path="/mods" element={ <ModsPage /> } />
       </Routes>
     </>
   )
