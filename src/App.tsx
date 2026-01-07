@@ -18,9 +18,9 @@ function App() {
       <Sidebar currentUser={mockUser} />
 
       <Routes>
-        <Route path="/" element={ <UserDashboard /> } />
-        <Route path="/console" element={ <Console /> } />
-        <Route path="/backups" element={ <BackupsPage /> } />
+          <Route path="/" element={ <UserDashboard /> } />
+          <Route path="/console" element={ <Console /> } />
+          <Route path="/backups" element={ <BackupsPage /> } />
           <Route path="/mods" element={ <ModsPage /> } />
       </Routes>
     </>

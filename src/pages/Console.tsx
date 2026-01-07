@@ -1,4 +1,4 @@
-import Terminal from "../components/terminal/Terminal.tsx";
+import Terminal from "../components/console-page/Terminal.tsx";
 
 export default function Console() {
    return (

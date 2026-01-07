@@ -1,7 +1,7 @@
-import ModCard from "../components/mods/ModCard.tsx";
+import ModCard from "../components/mods-page/ModCard.tsx";
 import {PopupModal} from "../components/common/Popup/PopupModal.tsx";
 import {useState} from "react";
-import ModUploadArea from "../components/mods/UploadMod.tsx";
+import ModUploadArea from "../components/mods-page/UploadMod.tsx";
 
 
 export type Mod = {
@@ -14,7 +14,7 @@ export type Mod = {
 
 export default function ModsPage() {
 
-    // Mock mods, for now.
+    // Mock mods-page, for now.
     const mockMods: Mod[] = [
         { id: '1', name: 'Mod One', version: '1.0.0', fileSize: 150 },
         { id: '2', name: 'Mod Two', version: '2.3.4' },
