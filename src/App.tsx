@@ -4,6 +4,7 @@ import Sidebar from "./components/common/Sidebar/Sidebar.tsx";
 import Console from "./pages/Console.tsx";
 import BackupsPage from "./pages/Backups.tsx";
 import ModsPage from "./pages/Mods.tsx";
+import SettingsPage from "./pages/Settings.tsx";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/console" element={ <Console /> } />
           <Route path="/backups" element={ <BackupsPage /> } />
           <Route path="/mods" element={ <ModsPage /> } />
+          <Route path="/settings" element={ <SettingsPage /> } />
       </Routes>
     </>
   )
