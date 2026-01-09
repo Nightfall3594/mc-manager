@@ -17,12 +17,12 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
 
     return (
       <html lang="en">
-        <Sidebar currentUser={mockUser}/>
-        <body
-          className={"bg-neutral-900 text-gray-300 "}
-        >
-          {children}
-        </body>
+          <body
+              className={"bg-neutral-900 text-gray-300 "}
+          >
+            <Sidebar currentUser={mockUser}/>
+            {children}
+          </body>
       </html>
     );
 }
