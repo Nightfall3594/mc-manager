@@ -1,5 +1,6 @@
+"use client";
 import { useState } from "react";
-import Switch from "../components/settings-page/Switch";
+import Switch from "../../components/settings-page/Switch.tsx";
 
 
 export default function SettingsPage() {

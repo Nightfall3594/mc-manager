@@ -1,5 +1,6 @@
-import type {User} from "../../../types/user.ts";
-import pfp from "../../../assets/pfp.jpg";
+"use client";
+import Image from "next/image";
+import pfp from "../../../../public/pfp.jpg";
 import SidebarLink from "./SidebarLink.tsx";
 import HomeIcon from "../icons/sidebar/Home.tsx";
 import ConsoleIcon from "../icons/sidebar/Console.tsx";
@@ -7,6 +8,11 @@ import FileIcon from "../icons/sidebar/Folder.tsx";
 import GearIcon from "../icons/sidebar/Setting.tsx";
 import ToolIcon from "../icons/sidebar/Tools.tsx";
 
+type User = {
+    id: string;
+    name: string;
+    email: string;
+}
 
 export default function Sidebar({currentUser}: {currentUser: User}) {
 
@@ -15,7 +21,7 @@ export default function Sidebar({currentUser}: {currentUser: User}) {
 
             {/* Logo */}
             <div className=" w-full flex items-center flex-row gap-3 p-6 mb-4">
-                <img
+                <Image
                     src={pfp}
                     alt={"Nightfall3594"}
                     className="rounded-md w-9 h-9"

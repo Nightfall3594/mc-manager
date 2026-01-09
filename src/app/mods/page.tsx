@@ -1,7 +1,8 @@
-import ModCard from "../components/mods-page/ModCard.tsx";
-import {PopupModal} from "../components/common/Popup/PopupModal.tsx";
+"use client";
+import ModCard from "../../components/mods-page/ModCard.tsx";
+import {PopupModal} from "../../components/common/Popup/PopupModal.tsx";
 import {useState} from "react";
-import ModUploadArea from "../components/mods-page/UploadMod.tsx";
+import ModUploadArea from "../../components/mods-page/UploadMod.tsx";
 
 
 export type Mod = {
@@ -45,8 +46,8 @@ export default function ModsPage() {
             {/* Mods container */}
             <div className="flex flex-col gap-2 justify-around">
                 {
-                    mockMods.map((mod: Mod) => {
-                        return <ModCard mod={mod} onRemove={() => {}}/>
+                    mockMods.map((mod: Mod, index) => {
+                        return <ModCard key={index} mod={mod} onRemove={() => {}}/>
                     })
                 }
             </div>
