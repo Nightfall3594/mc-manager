@@ -1,5 +1,11 @@
 "use client";
 import ServerStatusCard from "@/components/dashboard-page/ServerStatusCard.tsx";
+import ServerMetricCard from "@/components/dashboard-page/ServerMetricCard.tsx";
+import ToolIcon from "@/components/common/icons/sidebar/Tools.tsx";
+import PeopleIcon from "@/components/common/icons/server-stats/PeopleIcon.tsx";
+import ClockIcon from "@/components/common/icons/server-stats/ClockIcon.tsx";
+import PulseIcon from "@/components/common/icons/server-stats/PulseIcon.tsx";
+import CpuIcon from "@/components/common/icons/server-stats/CpuIcon.tsx";
 
 export default function UserDashboard() {
 
@@ -8,7 +14,7 @@ export default function UserDashboard() {
     // const [isOnline, setOnline] = useState(true);
 
     return (
-        <section className="ml-60 p-30 flex flex-1 flex-col min-h-screen">
+        <section className="ml-60 p-30 flex flex-1 flex-col min-h-screen ">
 
             {/* Server header */}
             <div className="flex flex-row items-center justify-between gap-4 mb-6 ">
@@ -24,6 +30,44 @@ export default function UserDashboard() {
             </div>
 
             <ServerStatusCard isOnline={isOnline}/>
+
+            <div className="mt-8 flex flex-row gap-2 ">
+                <ServerMetricCard
+                    title={"Players Online"}
+                    value={"2/20"}
+                    Icon={PeopleIcon}
+                    color={"bg-green-900"}
+                    highlight={"text-green-300"}
+                    className={"w-full"}
+                />
+
+                <ServerMetricCard
+                    title={"Uptime"}
+                    value={"5d 6h 27m"}
+                    Icon={ClockIcon}
+                    color={"bg-blue-900"}
+                    highlight={"text-blue-300"}
+                    className={"w-full"}
+                />
+
+                <ServerMetricCard
+                    title={"TPS"}
+                    value={"20"}
+                    Icon={PulseIcon}
+                    color={"bg-yellow-900"}
+                    highlight={"text-yellow-300"}
+                    className={"w-full"}
+                />
+
+                <ServerMetricCard
+                    title={"CPU"}
+                    value={"67%"}
+                    Icon={CpuIcon}
+                    color={"bg-red-900"}
+                    highlight={"text-red-300"}
+                    className={"w-full"}
+                />
+            </div>
 
         </section>
     )
