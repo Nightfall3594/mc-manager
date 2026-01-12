@@ -6,6 +6,8 @@ import PeopleIcon from "@/components/common/icons/server-stats/PeopleIcon.tsx";
 import ClockIcon from "@/components/common/icons/server-stats/ClockIcon.tsx";
 import PulseIcon from "@/components/common/icons/server-stats/PulseIcon.tsx";
 import CpuIcon from "@/components/common/icons/server-stats/CpuIcon.tsx";
+import ServerMetricBarCard from "@/components/dashboard-page/ServerMetricBarCard.tsx";
+import DiskIcon from "@/components/common/icons/server-stats/DiskIcon.tsx";
 
 export default function UserDashboard() {
 
@@ -61,11 +63,39 @@ export default function UserDashboard() {
 
                 <ServerMetricCard
                     title={"CPU"}
-                    value={"67%"}
+                    value={"60%"}
                     Icon={CpuIcon}
                     color={"bg-red-900"}
                     highlight={"text-red-300"}
                     className={"w-full"}
+                />
+            </div>
+
+
+            <div className="mt-5 w-full flex flex-row gap-2 ">
+                <ServerMetricBarCard
+                    title={"CPU"}
+                    Icon={CpuIcon}
+                    value={"60%"}
+                    percent={60}
+                    iconColor={"text-orange-500"}
+                    barColor={"bg-orange-400"}
+                />
+                <ServerMetricBarCard
+                    title={"Ram"}
+                    Icon={PulseIcon}
+                    value={"30%"}
+                    percent={30}
+                    iconColor={"text-blue-500"}
+                    barColor={"bg-blue-500"}
+                />
+                <ServerMetricBarCard
+                    title={"Disk"}
+                    Icon={DiskIcon}
+                    value={"10%"}
+                    percent={10}
+                    iconColor={"text-green-600"}
+                    barColor={"bg-green-600"}
                 />
             </div>
 
