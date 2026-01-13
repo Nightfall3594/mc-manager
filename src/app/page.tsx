@@ -8,6 +8,8 @@ import CpuIcon from "@/components/common/icons/server-stats/CpuIcon.tsx";
 import ServerMetricBarCard from "@/components/dashboard-page/ServerMetricBarCard.tsx";
 import DiskIcon from "@/components/common/icons/server-stats/DiskIcon.tsx";
 import TitledCard from "@/components/common/cards/TitledCard.tsx";
+import StopIcon from "@/components/common/icons/server-controls/StopIcon.tsx";
+import RestartIcon from "@/components/common/icons/server-controls/RestartIcon.tsx";
 
 export default function UserDashboard() {
 
@@ -62,8 +64,14 @@ export default function UserDashboard() {
                 </div>
 
                 <div className="flex flex-row items-center justify-center gap-6 ">
-                    <button className="px-4 py-2 w-30 bg-rose-600 saturate-80 rounded-md font-bold ">Stop</button>
-                    <button className="px-4 py-2 w-30 bg-sky-600 saturate-80  rounded-md font-bold ">Restart</button>
+                    <button className="px-4 py-2 w-30 bg-rose-600 saturate-80 rounded-md font-bold flex justify-around items-center ">
+                        <StopIcon className={"w-5 h-5 shrink-0"}/>
+                        <span>Stop</span>
+                    </button>
+                    <button className="px-4 py-2 w-30 bg-sky-600 saturate-80 rounded-md font-bold flex justify-around items-center ">
+                        <RestartIcon className={"w-4 h-4 shrink-0"}/>
+                        <span>Restart</span>
+                    </button>
                 </div>
             </div>
 
