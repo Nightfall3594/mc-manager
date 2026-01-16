@@ -1,44 +1,71 @@
-interface MCWorld {
-    name: string,
-    size: string,
-    version: string,
-    last_backup: string,
-}
+import ZippedFolderIcon from "@/components/common/icons/backups/ZippedFolderIcon.tsx";
+import Card from "@/components/common/cards/Card.tsx";
+import DownloadIcon from "@/components/common/icons/backups/DownloadIcon.tsx";
 
-const mockMCWorld : MCWorld | undefined = {
-    name: "ChillingMC",
-    size: "1.9 GB",
-    version: "1.21.10",
-    last_backup: "2026-01-05 03:12 UTC"
-}
+
+// mock world data
+const world = {
+    name: "world",
+    server: "Creative Build",
+    size: "1.87 GB",
+    lastModified: "2026-01-14",
+    seed: "-4589128118707775879",
+};
+
 
 export default function BackupsPage() {
-
-    // TODO: Fetch world data, store here
-    // const [world, setWorld] = useState([]);
-
-    // mock mc world for now
-    const world = mockMCWorld;
-
     return (
-        <section className="ml-60 p-30 flex flex-col flex-1 h-screen gap-8">
-            <div className="flex flex-1 flex-col gap-6 max-w-2xl">
-                <div className="rounded-lg border w p-6 flex flex-col gap-2">
-                    <div className="mb-3 ">
-                        <h1 className="text-4xl font-bold mb-1 ">{world?.name}</h1>
-                        <h2 className="text-2xl ">{world?.version}</h2>
-                    </div>
-                    <div className="text-lg space-y-1 ">
-                        <p>{`File size: ${world?.size}`}</p>
-                        <p>{`Last backup: ${world?.last_backup}`}</p>
-                        <p>Format: .zip</p>
-                    </div>
+        <section className="ml-60 p-30 flex flex-col justify-center items-center flex-1 h-screen gap-8 bg-neutral-950 text-white ">
+            <div className="flex flex-col gap-3 ">
+                <div className="flex flex-col items-start gap-1">
+                    <h1 className="text-3xl font-bold">World Download</h1>
+                    <p className="text-neutral-400">Download your server world files</p>
                 </div>
 
-                <button className="self-start px-6 py-3 w-auto rounded-md bg-emerald-700 backdrop-saturate-50 ">
-                    Download World
-                </button>
+                <Card className="max-w-3xl p-8 flex flex-col gap-6 bg-neutral-900 border border-neutral-800 rounded-2xl">
+                    {/* Header */}
+                    <div className="flex items-center gap-4">
+                        <div className="bg-blue-500/10 p-4 rounded-xl">
+                            <ZippedFolderIcon className="w-10 h-10 text-blue-400" />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <span className="text-xl font-semibold">{world.name}</span>
+                            <span className="text-neutral-400">Server: {world.server}</span>
+                        </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="bg-neutral-800/60 rounded-xl p-4">
+                            <p className="text-sm text-neutral-400">World Size</p>
+                            <p className="text-lg font-semibold">{world.size}</p>
+                        </div>
+
+                        <div className="bg-neutral-800/60 rounded-xl p-4">
+                            <p className="text-sm text-neutral-400">Last Modified</p>
+                            <p className="text-lg font-semibold">{world.lastModified}</p>
+                        </div>
+
+                        <div className="bg-neutral-800/60 rounded-xl p-4">
+                            <p className="text-sm text-neutral-400">World Seed</p>
+                            <p className="text-sm font-mono break-all">{world.seed}</p>
+                        </div>
+                    </div>
+
+                    {/* Download section */}
+                    <div className="flex flex-col gap-3">
+                        <button className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-500 transition rounded-xl py-3 font-semibold">
+                            <DownloadIcon className="w-5 h-5" />
+                            Download World Files
+                        </button>
+
+                        <p className="text-center text-sm text-neutral-500">
+                            This will download a compressed archive of your entire world folder
+                        </p>
+                    </div>
+                </Card>
             </div>
         </section>
-    )
+    );
 }
