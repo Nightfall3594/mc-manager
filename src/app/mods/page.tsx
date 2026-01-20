@@ -4,22 +4,20 @@ import {PopupModal} from "../../components/common/Popup/PopupModal.tsx";
 import {useState} from "react";
 import ModUploadArea from "../../components/mods-page/UploadMod.tsx";
 
-
 export type Mod = {
     id: string;
     name: string;
-    version: string;
+    uploadedOn: string;
     fileSize?: number;
-    imageUrl?: string;
 };
 
 export default function ModsPage() {
 
     // Mock mods-page, for now.
     const mockMods: Mod[] = [
-        { id: '1', name: 'Mod One', version: '1.0.0', fileSize: 150 },
-        { id: '2', name: 'Mod Two', version: '2.3.4' },
-        { id: '3', name: 'Mod Three', version: '1.2.1', fileSize: 75 },
+        { id: '1', name: 'Mod One', fileSize: 150, uploadedOn: '2026-01-11' },
+        { id: '2', name: 'Mod Two', uploadedOn: '2026-01-12' },
+        { id: '3', name: 'Mod Three', fileSize: 75, uploadedOn: '2026-01-13' },
     ]
 
     const [isUploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
@@ -28,10 +26,14 @@ export default function ModsPage() {
         <section className="ml-60 p-30 flex flex-col flex-1 h-screen gap-8">
 
             <div className="flex justify-between items-center w-full ">
-                <h1 className="text-4xl font-bold text-center ">
-                    Mods
-                </h1>
-
+                <div className="flex flex-col items-start justify-center gap-2">
+                    <h1 className="text-4xl font-bold text-center ">
+                        Mods
+                    </h1>
+                    <h2 className="text-neutral-400 text-center ">
+                        Upload and manage your mods here.
+                    </h2>
+                </div>
                 <div className="flex flex-row ">
                     <button
                         onClick={() => setUploadModalVisible(true)}
@@ -44,13 +46,13 @@ export default function ModsPage() {
             </div>
 
             {/* Mods container */}
-            <div className="flex flex-col gap-2 justify-around">
+            <ul className="flex flex-col p-0">
                 {
                     mockMods.map((mod: Mod, index) => {
-                        return <ModCard key={index} mod={mod} onRemove={() => {}}/>
+                        return <ModCard key={index} mod={mod} onRemove={() => {}} onDownload={() => {}}/>
                     })
                 }
-            </div>
+            </ul>
 
             <PopupModal
                 isOpen={isUploadModalVisible}
