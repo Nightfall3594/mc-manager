@@ -1,6 +1,6 @@
 import ZippedFolderIcon from "@/components/common/icons/backups/ZippedFolderIcon.tsx";
 import Card from "@/components/common/cards/Card.tsx";
-import DownloadIcon from "@/components/common/icons/backups/DownloadIcon.tsx";
+import DownloadIcon from "@/components/common/icons/common/DownloadIcon.tsx";
 
 
 // mock world data
