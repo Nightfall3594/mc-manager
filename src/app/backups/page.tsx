@@ -15,7 +15,7 @@ const world = {
 
 export default function BackupsPage() {
     return (
-        <section className="ml-60 p-30 flex flex-col justify-center items-center flex-1 h-screen gap-8 bg-neutral-950 text-white ">
+        <section className="ml-60 p-30 flex flex-col justify-center items-center flex-1 h-screen gap-8 bg-neutral-900 text-white ">
             <div className="flex flex-col gap-3 ">
                 <div className="flex flex-col items-start gap-1">
                     <h1 className="text-3xl font-bold">World Download</h1>

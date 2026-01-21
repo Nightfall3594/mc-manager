@@ -37,13 +37,17 @@ export default function SettingsPage() {
 
     return (
         <section className="ml-60 p-30 flex flex-col flex-1 h-screen text-white">
-            <h1 className="text-3xl font-bold mb-6">Minecraft Gamerules</h1>
-
-            <div className="flex flex-col gap-4 ">
+            <div className="flex flex-col gap-1.5 mb-6">
+                <h1 className="text-3xl font-bold">Minecraft Gamerules</h1>
+                <h2 className="text-lg text-neutral-300">Configure and Modify Server Rules</h2>
+            </div>
+            <div className="flex flex-col ">
                 {Object.entries(rules).map(([ruleName, value]) => (
                     <div
                         key={ruleName}
-                        className="flex items-center justify-between p-4 bg-neutral-700 rounded-lg"
+                        className="flex items-center justify-between p-5 bg-neutral-800
+                        border-x border-neutral-700 border-t last:border-b
+                        first:rounded-t-xl last:rounded-b-xl"
                     >
                         <span className="capitalize">{ruleName}</span>
                         <Switch checked={value} onToggle={() => toggleRule(ruleName)} />
