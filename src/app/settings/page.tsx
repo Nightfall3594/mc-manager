@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
-import Switch from "../../components/settings-page/Switch.tsx";
 import SwitchItem from "@/components/settings-page/switch-item/SwitchItem.tsx";
+import IntItem from "@/components/settings-page/int-item/IntItem.tsx";
+import StringItem from "@/components/settings-page/string-item/StringItem.tsx";
+import EnumItem from "@/components/settings-page/enum-item/EnumItem.tsx";
 
 type GameRule = {
     key: string;
@@ -141,6 +143,8 @@ export default function SettingsPage() {
         setPending(false);
     }
 
+    const [difficulty, setDifficulty] = useState("Easy");
+
     return (
         <section className="ml-60 p-30 flex flex-col flex-1 h-screen text-white">
             <div className="flex flex-col gap-1.5 mb-6">
@@ -152,6 +156,16 @@ export default function SettingsPage() {
                 {/* Sample switch */}
                 <SwitchItem ruleName={"Hello"} value={true} onToggle={() => {}}/>
 
+                <IntItem ruleName={"Max players"} value={20} onEdit={() => {}}/>
+
+                <StringItem ruleName={"World Name"} value={"Hello world"} onEdit={() => {}}/>
+
+                <EnumItem
+                    ruleName={"Difficulty"}
+                    value={difficulty}
+                    items={["Easy", "Medium", "Hard"]}
+                    onEdit={(difficulty) => {setDifficulty(difficulty)}}
+                />
 
             </div>
 
