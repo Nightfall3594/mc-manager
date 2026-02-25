@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import SwitchItem from "@/components/settings-page/switch-item/SwitchItem.tsx";
 import IntItem from "@/components/settings-page/int-item/IntItem.tsx";
 import StringItem from "@/components/settings-page/string-item/StringItem.tsx";
+import SwitchItem from "@/components/settings-page/switch-item/SwitchItem.tsx";
 import EnumItem from "@/components/settings-page/enum-item/EnumItem.tsx";
 
 type GameRule = {
@@ -15,7 +15,7 @@ type GameRule = {
 export default function SettingsPage() {
 
     // Mock for now, but this is going to be fetched from API
-    const MOCK_GAMERULES: GameRule[] = [
+    const [fetchedGameRules, setFetchedGameRules] = useState([
            {
                "key": "gamemode",
                "options": [
@@ -123,16 +123,28 @@ export default function SettingsPage() {
                "type": "INTEGER",
                "value": "29999984"
            }
-       ]
-    const gameRuleArray = [MOCK_GAMERULES.map(gameRule => {
-        return [gameRule.key, gameRule.value];
-    })]
+       ])
+
+    // parse JSON string into actual JS values
+    const gameRuleArray = fetchedGameRules.map(gameRule => {
+        let value;
+        switch (gameRule.type) {
+            case "BOOLEAN":
+                value = gameRule.value === "true";
+                break;
+            case "INTEGER":
+                value = parseInt(gameRule.value, 10);
+                break;
+            default:
+                value = gameRule.value;
+        }
+        return [gameRule.key, value];
+    })
 
     const initialGamerules = Object.fromEntries(gameRuleArray);
-    const gameRules = Object.fromEntries(gameRuleArray);
+    const [gamerules, setGamerules] = useState(Object.fromEntries(gameRuleArray));
 
     const [pending, setPending] = useState(false);
-
 
     function confirmChanges() {
         // TODO: POST request the rules to server
@@ -140,10 +152,9 @@ export default function SettingsPage() {
     }
 
     function resetChanges() {
+        setGamerules({...initialGamerules})
         setPending(false);
     }
-
-    const [difficulty, setDifficulty] = useState("Easy");
 
     return (
         <section className="ml-60 p-30 flex flex-col flex-1 h-screen text-white">
@@ -152,21 +163,65 @@ export default function SettingsPage() {
                 <h2 className="text-lg text-neutral-300">Configure and Modify Server Rules</h2>
             </div>
             <div className="flex flex-col ">
-
-                {/* Sample switch */}
-                <SwitchItem ruleName={"Hello"} value={true} onToggle={() => {}}/>
-
-                <IntItem ruleName={"Max players"} value={20} onEdit={() => {}}/>
-
-                <StringItem ruleName={"World Name"} value={"Hello world"} onEdit={() => {}}/>
-
-                <EnumItem
-                    ruleName={"Difficulty"}
-                    value={difficulty}
-                    items={["Easy", "Medium", "Hard"]}
-                    onEdit={(difficulty) => {setDifficulty(difficulty)}}
-                />
-
+                {
+                    fetchedGameRules.map((rule) => {
+                        switch(rule.type) {
+                            case "INTEGER":
+                                return (
+                                    <IntItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        onEdit={(newValue) => {
+                                            const updatedRules = {...gamerules, [rule.key]: newValue}
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                            case "STRING":
+                                return (
+                                    <StringItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        onEdit={(newValue) => {
+                                            const updatedRules = {...gamerules, [rule.key]: newValue}
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                            case "BOOLEAN":
+                                return (
+                                    <SwitchItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        onToggle={() => {
+                                            const updatedRules = {...gamerules, [rule.key]: !gamerules[rule.key]};
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                            case "ENUM":
+                                return (
+                                    <EnumItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        items={rule.options!}
+                                        onEdit={(newValue) => {
+                                            const updatedRules = {...gamerules, [rule.key]: newValue}
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                        }
+                    })
+                }
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
