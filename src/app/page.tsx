@@ -10,14 +10,77 @@ import DiskIcon from "@/components/common/icons/server-stats/DiskIcon.tsx";
 import TitledCard from "@/components/common/cards/TitledCard.tsx";
 import StopIcon from "@/components/common/icons/server-controls/StopIcon.tsx";
 import RestartIcon from "@/components/common/icons/server-controls/RestartIcon.tsx";
+import {useState, useEffect} from "react";
+import {Client} from "@stomp/stompjs";
+
+type ServerMetric = {
+    online: boolean;
+    cpu: number;
+    disk: number;
+    players: number;
+    ram: number;
+
+    tps: number;
+    uptime: number;
+
+    maxCpu: number;
+    maxDisk: number;
+    maxPlayers: number;
+    maxRam: number;
+}
+
+/**
+ * Minor helper function to format seconds to readable text
+ */
+function formatDuration(seconds: number): string {
+
+    const d: number = Math.floor(seconds/86400);
+    seconds = seconds % 86400;
+    const h = Math.floor(seconds/3600);
+    seconds = seconds % 3600;
+    const m = Math.floor(seconds/60);
+
+    let output: string = "";
+    if(d !== 0) output += d + "d ";
+    if(h !== 0) output += h + "h ";
+    output += m + "m";
+
+    return output;
+}
+
 
 export default function UserDashboard() {
 
-    // TODO: convert to state later
-    const isOnline = true;
-    // const [isOnline, setOnline] = useState(true);
+    const [serverData, setServerData] = useState<ServerMetric>({
+        online: false,
+        cpu: 0,
+        disk: 0,
+        players: 0,
+        ram: 0,
 
-    // more mock data
+        tps: 0,
+        uptime: 0,
+
+        maxCpu: 1,
+        maxDisk: 1,
+        maxPlayers: 20,
+        maxRam: 1
+    });
+
+    useEffect(() => {
+        const client = new Client({
+            brokerURL: 'ws://localhost:8080/ws',
+            onConnect: () => {
+                client.subscribe('/topic/metrics/live', message => {
+                    console.log('Connected to ' + message.body);
+                    setServerData(JSON.parse(message.body));
+                });
+            },
+        });
+        client.activate();
+    }, [])
+
+
     const currentOnlinePlayers = [
         {
             name: "HelloWorld",
@@ -75,12 +138,12 @@ export default function UserDashboard() {
                 </div>
             </div>
 
-            <ServerStatusCard isOnline={isOnline}/>
+            <ServerStatusCard isOnline={serverData.online}/>
 
             <div className="mt-8 flex flex-row gap-2 ">
                 <ServerMetricCard
                     title={"Players Online"}
-                    value={"2/20"}
+                    value={`${serverData.players}/${serverData.maxPlayers}`}
                     Icon={PeopleIcon}
                     color={"bg-green-900"}
                     highlight={"text-green-300"}
@@ -89,7 +152,7 @@ export default function UserDashboard() {
 
                 <ServerMetricCard
                     title={"Uptime"}
-                    value={"5d 6h 27m"}
+                    value={formatDuration(serverData.uptime)}
                     Icon={ClockIcon}
                     color={"bg-blue-900"}
                     highlight={"text-blue-300"}
@@ -98,7 +161,7 @@ export default function UserDashboard() {
 
                 <ServerMetricCard
                     title={"TPS"}
-                    value={"20"}
+                    value={serverData.tps.toFixed(0)}
                     Icon={PulseIcon}
                     color={"bg-yellow-900"}
                     highlight={"text-yellow-300"}
@@ -107,7 +170,7 @@ export default function UserDashboard() {
 
                 <ServerMetricCard
                     title={"CPU"}
-                    value={"60%"}
+                    value={`${serverData.cpu.toFixed(2)} core(s)`}
                     Icon={CpuIcon}
                     color={"bg-red-900"}
                     highlight={"text-red-300"}
@@ -120,24 +183,24 @@ export default function UserDashboard() {
                 <ServerMetricBarCard
                     title={"CPU"}
                     Icon={CpuIcon}
-                    value={"60%"}
-                    percent={60}
+                    value={serverData.cpu}
+                    maxValue={serverData.maxCpu}
                     iconColor={"text-orange-500"}
                     barColor={"bg-orange-400"}
                 />
                 <ServerMetricBarCard
                     title={"Ram"}
                     Icon={PulseIcon}
-                    value={"30%"}
-                    percent={30}
+                    value={serverData.ram}
+                    maxValue={serverData.maxRam}
                     iconColor={"text-blue-500"}
                     barColor={"bg-blue-500"}
                 />
                 <ServerMetricBarCard
                     title={"Disk"}
                     Icon={DiskIcon}
-                    value={"10%"}
-                    percent={10}
+                    value={serverData.disk}
+                    maxValue={serverData.maxDisk}
                     iconColor={"text-green-600"}
                     barColor={"bg-green-600"}
                 />
