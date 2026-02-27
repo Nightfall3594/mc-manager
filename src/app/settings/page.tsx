@@ -1,29 +1,150 @@
 "use client";
 import { useState } from "react";
-import Switch from "../../components/settings-page/Switch.tsx";
+import IntItem from "@/components/settings-page/int-item/IntItem.tsx";
+import StringItem from "@/components/settings-page/string-item/StringItem.tsx";
+import SwitchItem from "@/components/settings-page/switch-item/SwitchItem.tsx";
+import EnumItem from "@/components/settings-page/enum-item/EnumItem.tsx";
 
+type GameRule = {
+    key: string;
+    options?: string[];
+    type: string;
+    value: string;
+};
 
 export default function SettingsPage() {
 
     // Mock for now, but this is going to be fetched from API
-    // TODO: convert this to state
-    const initialRules: Record<string, boolean> = {
-        doDaylightCycle: true,
-        keepInventory: false,
-        mobGriefing: true,
-        fireSpread: false,
-    };
+    const [fetchedGameRules, setFetchedGameRules] = useState([
+           {
+               "key": "gamemode",
+               "options": [
+                   "survival",
+                   "creative",
+                   "adventure",
+                   "spectator"
+               ],
+               "type": "ENUM",
+               "value": "survival"
+           },
+           {
+               "key": "motd",
+               "type": "STRING",
+               "value": "A Minecraft Server of a couple friends"
+           },
+           {
+               "key": "pause-when-empty-seconds",
+               "type": "INTEGER",
+               "value": "400"
+           },
+           {
+               "key": "generate-structures",
+               "type": "BOOLEAN",
+               "value": "true"
+           },
+           {
+               "key": "difficulty",
+               "options": [
+                   "peaceful",
+                   "easy",
+                   "normal",
+                   "hard"
+               ],
+               "type": "ENUM",
+               "value": "hard"
+           },
+           {
+               "key": "max-players",
+               "type": "INTEGER",
+               "value": "20"
+           },
+           {
+               "key": "enable-status",
+               "type": "BOOLEAN",
+               "value": "true"
+           },
+           {
+               "key": "allow-flight",
+               "type": "BOOLEAN",
+               "value": "true"
+           },
+           {
+               "key": "view-distance",
+               "type": "INTEGER",
+               "value": "10"
+           },
+           {
+               "key": "hide-online-players",
+               "type": "BOOLEAN",
+               "value": "false"
+           },
+           {
+               "key": "entity-broadcast-range-percentage",
+               "type": "INTEGER",
+               "value": "100"
+           },
+           {
+               "key": "simulation-distance",
+               "type": "INTEGER",
+               "value": "10"
+           },
+           {
+               "key": "player-idle-timeout",
+               "type": "INTEGER",
+               "value": "0"
+           },
+           {
+               "key": "force-gamemode",
+               "type": "BOOLEAN",
+               "value": "false"
+           },
+           {
+               "key": "hardcore",
+               "type": "BOOLEAN",
+               "value": "false"
+           },
+           {
+               "key": "white-list",
+               "type": "BOOLEAN",
+               "value": "false"
+           },
+           {
+               "key": "enforce-whitelist",
+               "type": "BOOLEAN",
+               "value": "false"
+           },
+           {
+               "key": "spawn-protection",
+               "type": "INTEGER",
+               "value": "16"
+           },
+           {
+               "key": "max-world-size",
+               "type": "INTEGER",
+               "value": "29999984"
+           }
+       ])
 
-    const [rules, setRules] = useState<Record<string, boolean>>(initialRules);
+    // parse JSON string into actual JS values
+    const gameRuleArray = fetchedGameRules.map(gameRule => {
+        let value;
+        switch (gameRule.type) {
+            case "BOOLEAN":
+                value = gameRule.value === "true";
+                break;
+            case "INTEGER":
+                value = parseInt(gameRule.value, 10);
+                break;
+            default:
+                value = gameRule.value;
+        }
+        return [gameRule.key, value];
+    })
+
+    const initialGamerules = Object.fromEntries(gameRuleArray);
+    const [gamerules, setGamerules] = useState(Object.fromEntries(gameRuleArray));
+
     const [pending, setPending] = useState(false);
-
-    function toggleRule(ruleName: string) {
-        setRules((prev) => ({
-            ...prev,
-            [ruleName]: !prev[ruleName],
-        }));
-        setPending(true);
-    }
 
     function confirmChanges() {
         // TODO: POST request the rules to server
@@ -31,7 +152,7 @@ export default function SettingsPage() {
     }
 
     function resetChanges() {
-        setRules(initialRules);
+        setGamerules({...initialGamerules})
         setPending(false);
     }
 
@@ -42,17 +163,65 @@ export default function SettingsPage() {
                 <h2 className="text-lg text-neutral-300">Configure and Modify Server Rules</h2>
             </div>
             <div className="flex flex-col ">
-                {Object.entries(rules).map(([ruleName, value]) => (
-                    <div
-                        key={ruleName}
-                        className="flex items-center justify-between p-5 bg-neutral-800
-                        border-x border-neutral-700 border-t last:border-b
-                        first:rounded-t-xl last:rounded-b-xl"
-                    >
-                        <span className="capitalize">{ruleName}</span>
-                        <Switch checked={value} onToggle={() => toggleRule(ruleName)} />
-                    </div>
-                ))}
+                {
+                    fetchedGameRules.map((rule) => {
+                        switch(rule.type) {
+                            case "INTEGER":
+                                return (
+                                    <IntItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        onEdit={(newValue) => {
+                                            const updatedRules = {...gamerules, [rule.key]: newValue}
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                            case "STRING":
+                                return (
+                                    <StringItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        onEdit={(newValue) => {
+                                            const updatedRules = {...gamerules, [rule.key]: newValue}
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                            case "BOOLEAN":
+                                return (
+                                    <SwitchItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        onToggle={() => {
+                                            const updatedRules = {...gamerules, [rule.key]: !gamerules[rule.key]};
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                            case "ENUM":
+                                return (
+                                    <EnumItem
+                                        key={rule.key}
+                                        ruleName={rule.key.replace(/-/g, ' ')}
+                                        value={gamerules[rule.key]}
+                                        items={rule.options!}
+                                        onEdit={(newValue) => {
+                                            const updatedRules = {...gamerules, [rule.key]: newValue}
+                                            setGamerules(updatedRules);
+                                            setPending(JSON.stringify(initialGamerules) !== JSON.stringify(updatedRules));
+                                        }}
+                                    />
+                                )
+                        }
+                    })
+                }
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
