@@ -170,10 +170,6 @@ export default function UserDashboard() {
                         <StopIcon className={"w-5 h-5 shrink-0"}/>
                         <span>Stop</span>
                     </button>
-                    <button className="px-4 py-2 w-30 bg-sky-600 saturate-80 rounded-md font-bold flex justify-around items-center ">
-                        <RestartIcon className={"w-4 h-4 shrink-0"}/>
-                        <span>Restart</span>
-                    </button>
                 </div>
             </div>
 
