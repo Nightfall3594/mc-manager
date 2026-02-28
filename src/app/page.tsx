@@ -29,6 +29,16 @@ type ServerMetric = {
     maxRam: number;
 }
 
+type Event = {
+    timestamp: string,
+    message: string,
+}
+
+type Player = {
+    name: string,
+    joinTime: string
+}
+
 /**
  * Minor helper function to format seconds to readable text
  */
@@ -45,6 +55,56 @@ function formatDuration(seconds: number): string {
     if(h !== 0) output += h + "h ";
     output += m + "m";
 
+    return output;
+}
+
+/**
+ * Minor helper function to format timestamp
+ */
+function formatTimeAgo (timestamp: string) {
+    const [h, m, s] = timestamp.split(':').map(Number);
+    const now = new Date();
+    const past = new Date(now);
+    past.setHours(h, m, s, 0);
+
+    // note: if the timestamp is in the "future," it's actually yesterday
+    // this is because latest.log only focuses on last day
+    if (past > now) past.setDate(past.getDate() - 1);
+
+    const diffMs = now.getTime() - past.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHrs = Math.floor(diffMin / 60);
+
+    if (diffHrs > 0) return `${diffHrs} hour${diffHrs > 1 ? 's' : ''} ago`;
+    if (diffMin > 0) return `${diffMin} minute${diffMin > 1 ? 's' : ''} ago`;
+    return "Just now";
+}
+
+/**
+ * Minor helper function to format playtime
+ */
+function formatPlaytime(timestamp: string) {
+
+    const [h, m, s] = timestamp.split(':').map(Number);
+    const now = new Date();
+    const past = new Date(now);
+    past.setHours(h, m, s, 0);
+
+    // note: if the timestamp is in the "future," it's actually yesterday
+    // this is because latest.log only focuses on last day
+    if (past > now) past.setDate(past.getDate() - 1);
+
+    const secondsPlaytime = (now.getTime() - past.getTime()) / 1000;
+    const hoursPlaytime = Math.floor(secondsPlaytime / 3600);
+    const minutesPlaytime = Math.floor((hoursPlaytime % 3600) / 60);
+
+    if(hoursPlaytime === 0 && minutesPlaytime === 0) {
+        return "Just now";
+    }
+
+    let output = "";
+    if(hoursPlaytime !== 0) output += `${hoursPlaytime}h `;
+    if(minutesPlaytime !== 0) output += `${minutesPlaytime}m `;
     return output;
 }
 
@@ -80,41 +140,20 @@ export default function UserDashboard() {
         client.activate();
     }, [])
 
+    const [players, setPlayers] = useState<Player[]>([]);
+    useEffect(() => {
+        fetch("http://localhost:8080/metrics/players")
+            .then(res => res.json())
+            .then(players => setPlayers(players));
+    }, [])
 
-    const currentOnlinePlayers = [
-        {
-            name: "HelloWorld",
-            totalDuration: "20m"
-        },
-        {
-            name: "HelloWorld2",
-            totalDuration: "1m"
-        },
-        {
-            name: "HelloWorld3",
-            totalDuration: "2h 30m"
-        },
-    ]
+    const [events, setEvents] = useState<Event[]>([]);
+    useEffect(() => {
+        fetch("http://localhost:8080/metrics/events")
+            .then(res => res.json())
+            .then(data => setEvents(data))
+    }, []);
 
-    // more mock data
-    const mockEventData = [
-        {
-            event: "HelloWorld1 left the game",
-            time: "20m ago"
-        },
-        {
-            event: "HelloWorld1 joined the game",
-            time: "20m ago"
-        },
-        {
-            event: "HelloWorld2 joined the game",
-            time: "1m ago"
-        },
-        {
-            event: "HelloWorld3 joined the game",
-            time: "2h 30m ago"
-        },
-    ]
 
     return (
         <section className="ml-60 p-30 flex flex-1 flex-col min-h-screen ">
@@ -209,35 +248,39 @@ export default function UserDashboard() {
             <div className="flex flex-row mt-6 gap-2">
                 <TitledCard title={"Online Players"} Icon={PeopleIcon}>
                     <ul className="flex flex-col gap-1.5">
-                        {
-                            currentOnlinePlayers.map((player, index) => {
+                        {serverData.online
+                            ? players.map((player, index) => {
                                 return (
                                     <li className="px-3 py-2 rounded-md flex justify-between items-center bg-neutral-700/60" key={index}>
                                         <p>{player.name}</p>
                                         <p className={"text-xs text-neutral-400"}>
-                                            {player.totalDuration}
+                                            {formatPlaytime(player.joinTime)}
                                         </p>
                                     </li>
                                 )
                             })
+                            : ""
                         }
                     </ul>
                 </TitledCard>
 
                 <TitledCard title={"Recent Activity"} Icon={DiskIcon}>
                     <ul className="flex flex-col gap-2" >
-                        {mockEventData.map(({event, time}, index) => {
-                            return (
-                                <li className="px-3 py-2 rounded-md flex items-start gap-2 " key={index}>
-                                    <div className="w-2 h-2 rounded-full bg-green-400/60 mt-1.5 "/>
-                                    <div className="flex flex-col justify-center gap-1">
-                                        <p className={"text-sm"}>{event}</p>
-                                        <p className={"text-xs text-neutral-500"}>
-                                            {time}
-                                        </p>
-                                    </div>
-                                </li>
-                            )})}
+                        {serverData.online
+                            ? events.map(({timestamp, message}, index) => {
+                                return (
+                                    <li className="px-3 py-2 rounded-md flex items-start gap-2 " key={index}>
+                                        <div className="w-2 h-2 rounded-full bg-green-400/60 mt-1.5 "/>
+                                        <div className="flex flex-col justify-center gap-1">
+                                            <p className={"text-sm"}>{message}</p>
+                                            <p className={"text-xs text-neutral-500"}>
+                                                {formatTimeAgo(timestamp)}
+                                            </p>
+                                        </div>
+                                    </li>
+                                )})
+                            : ""
+                        }
                     </ul>
                 </TitledCard>
             </div>
