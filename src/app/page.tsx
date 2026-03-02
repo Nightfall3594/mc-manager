@@ -126,8 +126,12 @@ export default function UserDashboard() {
         maxRam: 1
     });
 
-    const [serverControlButtonState, setServerControlButtonState] =
-        useState<ServerControlButtonState>(ServerControlButtonState.PENDING);
+    const [serverControlButtonState, setServerControlButtonState] = useState<ServerControlButtonState>(
+            serverData.online
+                ? ServerControlButtonState.ONLINE
+                : ServerControlButtonState.OFFLINE
+        );
+
 
     useEffect(() => {
         const client = new Client({
@@ -141,6 +145,15 @@ export default function UserDashboard() {
         });
         client.activate();
     }, [])
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setServerControlButtonState(
+            serverData.online
+                ? ServerControlButtonState.ONLINE
+                : ServerControlButtonState.OFFLINE
+        )
+    }, [serverData.online]);
 
     const [players, setPlayers] = useState<Player[]>([]);
     useEffect(() => {
