@@ -1,20 +1,27 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import {Client} from "@stomp/stompjs";
 
 interface TerminalProps {
     prompt?: string;
 }
 
 export default function Terminal({ prompt = ">" }: TerminalProps) {
-    const [input, setInput] = useState("");
 
-    // Mock logs, for now. TODO: fetch from API
-    const [history, setHistory] = useState<string[]>([
-        "[2026-01-11 14:23:45] Server started successfully",
-        "[2026-01-11 14:23:46] Loading world data...",
-        "[2026-01-11 14:23:47] World loaded: HelloWorld",
-        "[2026-01-11 14:23:48] Server is running on 192.168.1.5:3306",
-    ]);
+    const [input, setInput] = useState("");
+    const [history, setHistory] = useState<string[]>([]);
+
+    useEffect(() => {
+        const client = new Client({
+            brokerURL: `${process.env.NEXT_PUBLIC_WS_API_URL}/ws`,
+            onConnect: () => {
+                client.subscribe('/topic/console/live', message => {
+                    setHistory(history => history.concat(message.body));
+                });
+            },
+        });
+        client.activate();
+    }, [])
 
     const logsRef = useRef<HTMLDivElement>(null);
 
