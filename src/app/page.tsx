@@ -135,7 +135,7 @@ export default function UserDashboard() {
 
     useEffect(() => {
         const client = new Client({
-            brokerURL: 'ws://localhost:8080/ws',
+            brokerURL: `${process.env.NEXT_PUBLIC_WS_API_URL}/ws`,
             onConnect: () => {
                 client.subscribe('/topic/metrics/live', message => {
                     console.log('Connected to ' + message.body);
@@ -157,14 +157,14 @@ export default function UserDashboard() {
 
     const [players, setPlayers] = useState<Player[]>([]);
     useEffect(() => {
-        fetch("http://localhost:8080/metrics/players")
+        fetch(`${process.env.NEXT_PUBLIC_HTTP_API_URL}/metrics/players`)
             .then(res => res.json())
             .then(players => setPlayers(players));
     }, [])
 
     const [events, setEvents] = useState<Event[]>([]);
     useEffect(() => {
-        fetch("http://localhost:8080/metrics/events")
+        fetch(`${process.env.NEXT_PUBLIC_HTTP_API_URL}/metrics/events`)
             .then(res => res.json())
             .then(data => setEvents(data))
     }, []);
