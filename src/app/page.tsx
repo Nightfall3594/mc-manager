@@ -8,10 +8,9 @@ import CpuIcon from "@/components/common/icons/server-stats/CpuIcon.tsx";
 import ServerMetricBarCard from "@/components/dashboard-page/ServerMetricBarCard.tsx";
 import DiskIcon from "@/components/common/icons/server-stats/DiskIcon.tsx";
 import TitledCard from "@/components/common/cards/TitledCard.tsx";
-import StopIcon from "@/components/common/icons/server-controls/StopIcon.tsx";
-import RestartIcon from "@/components/common/icons/server-controls/RestartIcon.tsx";
 import {useState, useEffect} from "react";
 import {Client} from "@stomp/stompjs";
+import {ServerControlButton, ServerControlButtonState} from "@/components/dashboard-page/ServerControlButton.tsx";
 
 type ServerMetric = {
     online: boolean;
@@ -127,6 +126,9 @@ export default function UserDashboard() {
         maxRam: 1
     });
 
+    const [serverControlButtonState, setServerControlButtonState] =
+        useState<ServerControlButtonState>(ServerControlButtonState.PENDING);
+
     useEffect(() => {
         const client = new Client({
             brokerURL: 'ws://localhost:8080/ws',
@@ -164,17 +166,20 @@ export default function UserDashboard() {
                     <h1 className="text-4xl font-bold ">Chillingmc</h1>
                     <p className="text-md text-neutral-400 ">192.168.56.13:6543</p>
                 </div>
-
-                <div className="flex flex-row items-center justify-center gap-6 ">
-                    <button className="px-4 py-2 w-30 bg-rose-600 saturate-80 rounded-md font-bold flex justify-around items-center ">
-                        <StopIcon className={"w-5 h-5 shrink-0"}/>
-                        <span>Stop</span>
-                    </button>
-                </div>
+                <ServerControlButton
+                    state={serverControlButtonState}
+                    onClick={() => setServerControlButtonState(ServerControlButtonState.PENDING)}
+                    onError={() => setServerControlButtonState(
+                        serverData.online
+                            ? ServerControlButtonState.ONLINE
+                            : ServerControlButtonState.OFFLINE
+                    )}
+                />
             </div>
 
             <ServerStatusCard isOnline={serverData.online}/>
 
+            {/* Server main status */}
             <div className="mt-8 flex flex-row gap-2 ">
                 <ServerMetricCard
                     title={"Players Online"}
@@ -214,6 +219,7 @@ export default function UserDashboard() {
             </div>
 
 
+            {/* Server server bar metrics */}
             <div className="mt-5 w-full flex flex-row gap-2 ">
                 <ServerMetricBarCard
                     title={"CPU"}
@@ -241,6 +247,7 @@ export default function UserDashboard() {
                 />
             </div>
 
+            {/* Server players and events */}
             <div className="flex flex-row mt-6 gap-2">
                 <TitledCard title={"Online Players"} Icon={PeopleIcon}>
                     <ul className="flex flex-col gap-1.5">
