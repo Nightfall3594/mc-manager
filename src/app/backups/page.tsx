@@ -1,19 +1,33 @@
+"use client"
 import ZippedFolderIcon from "@/components/common/icons/backups/ZippedFolderIcon.tsx";
 import Card from "@/components/common/cards/Card.tsx";
 import DownloadIcon from "@/components/common/icons/common/DownloadIcon.tsx";
+import {useState} from "react";
 
 
-// mock world data
-const world = {
-    name: "world",
-    server: "Creative Build",
-    size: "1.87 GB",
-    lastModified: "2026-01-14",
-    seed: "-4589128118707775879",
-};
-
+type WorldMetadata = {
+    worldName: string;
+    fileSize: number;
+    lastModified: string;
+    worldSeed: string;
+}
 
 export default function BackupsPage() {
+
+    const [world, setWorld] = useState<WorldMetadata>({
+        worldName: "",
+        fileSize: 0,
+        lastModified: "",
+        worldSeed: ""
+    })
+
+    fetch(`${process.env.NEXT_PUBLIC_HTTP_API_URL}/world/backup/data`)
+        .then(response => response.json())
+        .then(data => setWorld(data))
+
+    const worldSize: string = `${(world.fileSize/ Math.pow(10, 9)).toFixed(2)} GB`;
+    const lastModified: string = world.lastModified.length < 10 ? "undefined" : world.lastModified.substring(0, 10);
+
     return (
         <section className="ml-60 p-30 flex flex-col justify-center items-center flex-1 h-screen gap-8 bg-neutral-900 text-white ">
             <div className="flex flex-col gap-3 ">
@@ -30,8 +44,8 @@ export default function BackupsPage() {
                         </div>
 
                         <div className="flex flex-col">
-                            <span className="text-xl font-semibold">{world.name}</span>
-                            <span className="text-neutral-400">Server: {world.server}</span>
+                            <span className="text-xl font-semibold">{world.worldName}</span>
+                            <span className="text-neutral-400">Server: Chillingmc</span>
                         </div>
                     </div>
 
@@ -39,17 +53,17 @@ export default function BackupsPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="bg-neutral-700/60 rounded-xl p-4">
                             <p className="text-sm text-neutral-400">World Size</p>
-                            <p className="text-lg font-semibold">{world.size}</p>
+                            <p className="text-lg font-semibold">{worldSize}</p>
                         </div>
 
                         <div className="bg-neutral-700/60 rounded-xl p-4">
                             <p className="text-sm text-neutral-400">Last Modified</p>
-                            <p className="text-lg font-semibold">{world.lastModified}</p>
+                            <p className="text-lg font-semibold">{lastModified}</p>
                         </div>
 
                         <div className="bg-neutral-700/60 rounded-xl p-4">
                             <p className="text-sm text-neutral-400">World Seed</p>
-                            <p className="text-sm font-mono break-all">{world.seed}</p>
+                            <p className="text-sm font-mono break-all">{world.worldSeed}</p>
                         </div>
                     </div>
 
