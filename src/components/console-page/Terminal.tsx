@@ -11,6 +11,7 @@ export default function Terminal({ prompt = ">" }: TerminalProps) {
     const [input, setInput] = useState("");
     const [history, setHistory] = useState<string[]>([]);
 
+    const webSocketClient = useRef<Client|null>(null);
     useEffect(() => {
         const client = new Client({
             brokerURL: `${process.env.NEXT_PUBLIC_WS_API_URL}/ws`,
@@ -18,31 +19,39 @@ export default function Terminal({ prompt = ">" }: TerminalProps) {
                 client.subscribe('/topic/console/live', message => {
                     setHistory(history => history.concat(message.body));
                 });
+
+                client.subscribe('/user/topic/console/live', message => {
+                    setHistory(history => history.concat(message.body));
+                });
             },
         });
         client.activate();
+        webSocketClient.current = client;
+        return () => {
+            client.deactivate({force: true});
+            webSocketClient.current = null;
+        }
     }, [])
 
-    const logsRef = useRef<HTMLDivElement>(null);
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    function handleKeyDown (e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
             if (!input.trim()) return;
 
-            setHistory(prev => [
-                ...prev,
-                `${prompt} ${input}`,
-                `[${new Date().toISOString().replace("T", " ").slice(0, 19)}] Command executed: ${input}`,
-            ]);
+            webSocketClient.current?.publish({
+                destination: '/topic/console/command',
+                body: input.trim(),
+            })
 
             setInput("");
             e.preventDefault();
         }
     };
 
+    // note: for scrolling down to latest message upon new message
+    const logContainer = useRef<HTMLDivElement>(null);
     useEffect(() => {
-        logsRef.current?.scrollTo({
-            top: logsRef.current.scrollHeight,
+        logContainer.current?.scrollTo({
+            top: logContainer.current.scrollHeight,
             behavior: "smooth",
         });
     }, [history]);
@@ -52,7 +61,7 @@ export default function Terminal({ prompt = ">" }: TerminalProps) {
         <div className="flex flex-col bg-black text-white font-mono rounded-xl border border-white/20 shadow-inner w-full">
             {/* Logs */}
             <div
-                ref={logsRef}
+                ref={logContainer}
                 className="flex-1 p-4 space-y-2 overflow-y-auto break-all [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
                 {history.map((line, i) => (
