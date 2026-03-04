@@ -69,10 +69,13 @@ export default function BackupsPage() {
 
                     {/* Download section */}
                     <div className="flex flex-col gap-3">
-                        <button className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-500 transition rounded-xl py-3 font-semibold">
+                        <a
+                            href={`${process.env.NEXT_PUBLIC_HTTP_API_URL}/world/backup`}
+                            className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-500 transition rounded-xl py-3 font-semibold"
+                        >
                             <DownloadIcon className="w-5 h-5" />
                             Download World Files
-                        </button>
+                        </a>
 
                         <p className="text-center text-sm text-neutral-500">
                             This will download a compressed archive of your entire world folder
