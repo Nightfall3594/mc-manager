@@ -9,7 +9,7 @@ type ModCardProps = {
     version: string;
     fileName: string;
     fileSize: string;
-    onRemove: (id: string) => void;
+    onRemove: (fileName: string) => void;
 };
 
 export default function ModCard({ name, version, fileSize, fileName, onRemove}: ModCardProps) {
@@ -36,7 +36,7 @@ export default function ModCard({ name, version, fileSize, fileName, onRemove}: 
                             </span>
                         )}
                         <span className="text-xs text-neutral-400">
-                            Uploaded on {version}
+                            {`version ${version}`}
                         </span>
                     </div>
                 </div>

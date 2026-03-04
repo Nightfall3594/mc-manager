@@ -83,7 +83,17 @@ export default function ModsPage() {
                             version={mod.version}
                             fileSize={formatFileSize(mod.fileSize)}
                             key={index}
-                            onRemove={() => {}}
+                            onRemove={async () => {
+                                const result = await fetch(
+                                    `${process.env.NEXT_PUBLIC_HTTP_API_URL}/mods?fileName=${mod.fileName}`,
+                                    {method: 'DELETE'})
+
+                                if(result.ok) {
+                                    fetch(`${process.env.NEXT_PUBLIC_HTTP_API_URL}/mods`)
+                                        .then(res => res.json())
+                                        .then(mods => setMods(mods))
+                                }
+                            }}
                         />
                     })
                 }
