@@ -1,13 +1,29 @@
 "use client";
 import ModCard from "../../components/mods-page/ModCard.tsx";
 import UploadIcon from "@/components/common/icons/mods-page/UploadIcon.tsx";
+import {useEffect, useState} from "react";
 
 export type Mod = {
-    id: string;
     name: string;
     version: string;
-    fileSize?: number;
+    fileSize: number;
+    fileName: string;
 };
+
+function formatFileSize (fileSize: number): string {
+    // 1 GB = 1073741824 bytes
+    if(fileSize >= 1073741824) {
+        return `${(fileSize/1073741824).toFixed(2)} GB`;
+
+    // 1 MB = 1048576 bytes
+    } else if (fileSize >= 1048576) {
+        return `${(fileSize/1048576).toFixed(2)} MB`;
+
+    // 1 KB = 1024 bytes
+    } else {
+        return `${(fileSize/1024).toFixed(2)} KB`;
+    }
+}
 
 // TODO: handle file upload
 function handleFileUpload(file: File) {
@@ -16,12 +32,13 @@ function handleFileUpload(file: File) {
 
 export default function ModsPage() {
 
-    // Mock mods-page, for now.
-    const mockMods: Mod[] = [
-        { id: '1', name: 'Mod One', fileSize: 150, version: 'forge-0.9.18' },
-        { id: '2', name: 'Mod Two', version: '3.21.16' },
-        { id: '3', name: 'Mod Three', fileSize: 75, version: '1.21.10' },
-    ]
+    const [mods, setMods] = useState<Mod[]>([]);
+
+    useEffect(() => {
+        fetch(`${process.env.NEXT_PUBLIC_HTTP_API_URL}/mods`)
+            .then(res => res.json())
+            .then(mods => setMods(mods));
+    }, [])
 
     return (
         <section className="ml-60 p-30 flex flex-col flex-1 h-screen gap-8">
@@ -59,12 +76,14 @@ export default function ModsPage() {
             {/* Mods container */}
             <ul className="flex flex-col p-0">
                 {
-                    mockMods.map((mod: Mod, index) => {
+                    mods.map((mod: Mod, index) => {
                         return <ModCard
+                            fileName={mod.fileName}
+                            name={mod.name}
+                            version={mod.version}
+                            fileSize={formatFileSize(mod.fileSize)}
                             key={index}
-                            mod={mod}
                             onRemove={() => {}}
-                            onDownload={() => {}}
                         />
                     })
                 }
