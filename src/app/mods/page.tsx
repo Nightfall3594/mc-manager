@@ -25,10 +25,6 @@ function formatFileSize (fileSize: number): string {
     }
 }
 
-// TODO: handle file upload
-function handleFileUpload(file: File) {
-    console.log(file)
-}
 
 export default function ModsPage() {
 
@@ -58,9 +54,22 @@ export default function ModsPage() {
                             type="file"
                             hidden
                             accept=".jar"
-                            onChange={(e) => {
+                            onChange={ async (e) => {
                                 if (e.target.files) {
-                                    handleFileUpload(e.target.files[0])
+
+                                    const formData = new FormData();
+                                    formData.append('file', e.target.files[0]);
+
+                                    const result = await fetch(
+                                        `${process.env.NEXT_PUBLIC_HTTP_API_URL}/mods`,
+                                        {method: "POST", body: formData})
+
+                                    if(result.ok) {
+                                        fetch(`${process.env.NEXT_PUBLIC_HTTP_API_URL}/mods`)
+                                            .then(res => res.json())
+                                            .then(mods => setMods(mods));
+                                    }
+
                                     e.target.value = '';
                                 }
                             }}
