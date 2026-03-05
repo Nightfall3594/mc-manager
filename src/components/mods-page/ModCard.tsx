@@ -2,20 +2,18 @@ import TrashcanIcon from "../common/icons/Trashcan.tsx";
 import BoxIcon from "@/components/common/icons/mods-page/BoxIcon.tsx";
 import DownloadIcon from "@/components/common/icons/common/DownloadIcon.tsx";
 
-export type Mod = {
-    id: string;
-    name: string;
-    version: string;
-    fileSize?: number;
-};
+
 
 type ModCardProps = {
-    mod: Mod;
-    onRemove: (id: string) => void;
-    onDownload: (id: string) => void;
+    name: string;
+    version: string;
+    fileName: string;
+    fileSize: string;
+    onRemove: (fileName: string) => void;
 };
 
-export default function ModCard({ mod, onRemove, onDownload }: ModCardProps) {
+export default function ModCard({ name, version, fileSize, fileName, onRemove}: ModCardProps) {
+
     return (
         <li className="relative flex justify-between items-center p-5 bg-neutral-800
              border-x border-t last:border-b
@@ -28,17 +26,17 @@ export default function ModCard({ mod, onRemove, onDownload }: ModCardProps) {
                 {/* Mod info */}
                 <div className="flex flex-col justify-center gap-2 ">
                     <h3 className="text-lg font-semibold text-white leading-tight">
-                        {mod.name}
+                        {name}
                     </h3>
 
                     <div className="flex flex-row gap-3">
-                        {mod.fileSize !== undefined && (
+                        {fileSize !== undefined && (
                             <span className="text-xs text-neutral-400">
-                                {(mod.fileSize / 1024).toFixed(2)} MB
+                                {fileSize}
                             </span>
                         )}
                         <span className="text-xs text-neutral-400">
-                            Uploaded on {mod.version}
+                            {`version ${version}`}
                         </span>
                     </div>
                 </div>
@@ -47,16 +45,16 @@ export default function ModCard({ mod, onRemove, onDownload }: ModCardProps) {
             {/* Download/Delete buttons */}
             <div className="flex flex-row gap-7 mr-4">
 
-                <button
-                    onClick={() => onDownload(mod.id)}
+                <a
+                    href={`${process.env.NEXT_PUBLIC_HTTP_API_URL}/mods/download?fileName=${fileName}`}
                     title="Remove mod"
                     className="text-neutral-400 hover:text-blue-500 hover:scale-120 cursor-pointer transition"
                 >
                     <DownloadIcon className="w-5 h-5"/>
-                </button>
+                </a>
 
                 <button
-                    onClick={() => onRemove(mod.id)}
+                    onClick={() => onRemove(fileName)}
                     title="Remove mod"
                     className="text-neutral-400 hover:text-red-500 hover:scale-120 cursor-pointer transition"
                 >
