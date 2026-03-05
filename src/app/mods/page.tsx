@@ -49,7 +49,7 @@ export default function ModsPage() {
                     </h2>
                 </div>
                 <div className="flex flex-row gap-2">
-                    <label className="bg-blue-500/60 px-3 py-2 rounded-lg flex flex-row gap-3 items-center">
+                    <label className="bg-blue-500/60 px-3 py-2 rounded-lg flex flex-row gap-3 items-center hover:bg-blue-400/60 active:bg-blue-500/55 cursor-pointer">
                         <input
                             type="file"
                             hidden
