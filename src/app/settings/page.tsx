@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import {useState, useEffect, useCallback} from "react";
 import IntItem from "@/components/settings-page/int-item/IntItem.tsx";
 import StringItem from "@/components/settings-page/string-item/StringItem.tsx";
 import SwitchItem from "@/components/settings-page/switch-item/SwitchItem.tsx";
@@ -20,11 +20,10 @@ export default function SettingsPage() {
     const [gamerules, setGamerules] = useState<GameruleSet>({});
     const [initialGamerules, setInitialGamerules] = useState<GameruleSet>({});
 
-    useEffect(() => {
+    const fetchGamerules = useCallback(() => {
         fetch(`${process.env.NEXT_PUBLIC_HTTP_API_URL}/server-properties`)
             .then(res => res.json())
             .then((data: GameruleMetadata[]) => {
-
                 const result = data.reduce((acc, item: GameruleMetadata) => {
                     let value;
                     switch (item.type) {
@@ -39,23 +38,18 @@ export default function SettingsPage() {
                     }
                     acc[item.key] = value;
                     return acc;
-                    
+
                 }, {} as GameruleSet);
 
                 setGameruleMetadata(data);
                 setGamerules(result);
-                setInitialGamerules(result);
+                setInitialGamerules(result)
             })
-
     }, [])
 
+    useEffect(() => { fetchGamerules() }, []);
 
     const [pending, setPending] = useState(false);
-
-    function confirmChanges() {
-        // TODO: POST request the rules to server
-        setPending(false);
-    }
 
     function resetChanges() {
         setGamerules({...initialGamerules})
@@ -145,7 +139,6 @@ export default function SettingsPage() {
                 </button>
 
                 <button
-                    onClick={confirmChanges}
                     disabled={!pending}
                     className={`px-6 py-2 rounded-md font-medium transition
                         ${ pending
@@ -153,6 +146,26 @@ export default function SettingsPage() {
                             : "bg-neutral-600 opacity-50 cursor-not-allowed"
                         }`
                     }
+                    onClick = {() => {
+                        setPending(false);  // to disable the button while sending
+
+                        const formattedGamerules = Object.fromEntries(
+                            Object.entries(gamerules).map(([key, value]) => [key, String(value)])
+                        );
+
+                        fetch(
+                            `${process.env.NEXT_PUBLIC_HTTP_API_URL}/server-properties`,
+                            {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(formattedGamerules)
+                            })
+                            .then(() => {
+                                fetchGamerules()
+                                setPending(false)
+                            })
+                            .catch(() => setPending(true))
+                    }}
                 >
                     Confirm
                 </button>
