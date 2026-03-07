@@ -57,7 +57,7 @@ export default function SettingsPage() {
     }
 
     return (
-        <section className="ml-60 p-30 flex flex-col flex-1 h-screen text-white">
+        <section className="ml-60 p-30 flex flex-col flex-1 min-h-screen text-white">
             <div className="flex flex-col gap-1.5 mb-6">
                 <h1 className="text-3xl font-bold">Minecraft Gamerules</h1>
                 <h2 className="text-lg text-neutral-300">Configure and Modify Server Rules</h2>
